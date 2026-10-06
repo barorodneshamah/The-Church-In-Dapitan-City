@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Frequently Asked Questions — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .faq-accordion { max-width: 100%; }
+    .faq-item { border: 1px solid var(--church-border); border-radius: var(--radius); margin-bottom: 0.75rem; background: #fff; overflow: hidden; transition: box-shadow var(--transition); }
+    .faq-item:has(.faq-question:not(.collapsed)) { box-shadow: var(--shadow-sm); border-color: var(--church-gold); }
+    .faq-question { width: 100%; background: #fff; border: none; padding: 1.2rem 1.5rem; text-align: left; font-family: var(--font-heading); font-size: 1rem; font-weight: 600; color: var(--church-navy); display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; transition: color var(--transition), background var(--transition); line-height: 1.5; }
+    .faq-question:not(.collapsed) { color: var(--church-gold-dk); background: var(--church-cream); }
+    .faq-question:hover { color: var(--church-gold-dk); }
+    .faq-icon { flex-shrink: 0; font-size: 0.85rem; transition: transform 0.25s; color: var(--church-gold); }
+    .faq-question:not(.collapsed) .faq-icon { transform: rotate(180deg); }
+    .faq-answer { padding: 1.1rem 1.5rem 1.4rem; font-size: 0.97rem; line-height: 1.85; color: var(--church-text); border-top: 1px solid var(--church-border); }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Frequently Asked Questions</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">FAQ</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+{# Intro #}
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-animate>
+                <p class="section-label">Common Questions</p>
+                <h2 class="section-title">Questions &amp; Answers</h2>
+                <div class="section-divider mx-auto"></div>
+                <p class="text-muted lh-lg">
+                    Below are answers to some of the most common questions about the Church in Dapitan City,
+                    our practice, and our beliefs. We welcome any further questions you may have.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# FAQ Accordion #}
+<section class="py-5 bg-church-cream">
+    <div class="container py-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                {% if faqs is empty %}
+                    <p class="text-center text-muted">No questions have been added yet. Check back soon.</p>
+                {% else %}
+                    <div class="faq-accordion" id="faqAccordion">
+                        {% for faq in faqs %}
+                            <div class="faq-item" id="faqItem{{ faq.id }}" data-animate>
+                                <button class="faq-question{% if not loop.first %} collapsed{% endif %}"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#faqAnswer{{ faq.id }}"
+                                        aria-expanded="{{ loop.first ? 'true' : 'false' }}"
+                                        aria-controls="faqAnswer{{ faq.id }}">
+                                    {{ faq.question }}
+                                    <span class="faq-icon"><i class="bi bi-chevron-down"></i></span>
+                                </button>
+                                <div id="faqAnswer{{ faq.id }}"
+                                     class="collapse{% if loop.first %} show{% endif %}"
+                                     data-bs-parent="#faqAccordion">
+                                    <div class="faq-answer">
+                                        {{ faq.answer|nl2br }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Contact CTA #}
+<section class="py-5 text-center" style="background: linear-gradient(135deg, var(--church-navy) 0%, #010330 100%); border-top: 3px solid var(--church-gold);">
+    <div class="container py-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-7" data-animate>
+                <p class="section-label" style="color:var(--church-gold-lt);opacity:.85;">Still Have Questions?</p>
+                <h2 class="section-title" style="color:#fff;">We'd Love to Hear From You</h2>
+                <div class="section-divider mx-auto"></div>
+                <p style="color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 2rem;">
+                    Don't hesitate to reach out. We are happy to answer any questions you may have
+                    about our gatherings, beliefs, or church life.
+                </p>
+                <a href="{{ path('app_contact') }}" class="btn-church">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

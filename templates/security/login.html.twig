@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .login-card { background: #fff; border: 1px solid var(--church-border); border-radius: 6px; padding: 2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); max-width: 440px; width: 100%; }
+    .login-card .login-logo { width: 60px; height: 60px; background: var(--church-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+    .login-card .login-logo svg { width: 30px; height: 30px; fill: var(--church-dark); }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <h1>Member Login</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Login</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5 bg-church-cream" style="min-height:60vh;display:flex;align-items:center;">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="login-card">
+
+                {# Logo #}
+                <div class="login-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 2h2v7h7v2h-7v11h-2V11H4V9h7V2z"/>
+                    </svg>
+                </div>
+
+                <h2 class="section-title text-center mb-1" style="font-size:1.4rem;">Welcome Back</h2>
+                <p class="text-muted text-center mb-4" style="font-size:0.88rem;">The Church in Dapitan City</p>
+
+                {% if error %}
+                    <div class="alert alert-danger mb-3">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{{ path('app_login') }}">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               value="{{ last_username }}" required autofocus
+                               placeholder="your@email.com"
+                               autocomplete="email">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               required placeholder="••••••••"
+                               autocomplete="current-password">
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
+                            <label class="form-check-label text-muted" for="rememberMe" style="font-size:0.85rem;">
+                                Remember me
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button type="submit" class="btn-church w-100">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    </button>
+
+                </form>
+
+                <p class="text-center text-muted mt-4 mb-0" style="font-size:0.82rem;">
+                    Don't have an account?
+                    <a href="{{ path('app_contact') }}">Contact the church</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

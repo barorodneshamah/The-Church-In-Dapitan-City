@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Related Links — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .related-link-card { display: flex; align-items: flex-start; gap: 1rem; background: #fff; border: 1px solid var(--church-border); border-radius: 4px; padding: 1.25rem 1.5rem; text-decoration: none; color: var(--church-text); transition: all 0.25s; height: 100%; }
+    .related-link-card:hover { border-color: var(--church-gold); box-shadow: 0 5px 18px rgba(0,0,0,0.08); color: var(--church-navy); }
+    .related-link-logo { width: 52px; height: 52px; border-radius: 6px; object-fit: contain; border: 1px solid var(--church-border); flex-shrink: 0; background: var(--church-section); }
+    .related-link-icon { width: 52px; height: 52px; border-radius: 6px; background: var(--church-section); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--church-gold-dk); flex-shrink: 0; border: 1px solid var(--church-border); }
+    .related-link-body h5 { font-size: 0.95rem; color: var(--church-navy); margin-bottom: 0.25rem; font-weight: 700; }
+    .related-link-body p { font-size: 0.82rem; color: var(--church-muted); margin: 0; line-height: 1.5; }
+    .related-link-url { font-size: 0.75rem; color: var(--church-gold-dk); display: block; margin-top: 0.25rem; word-break: break-all; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Related Links</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Related Links</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5 bg-church-cream">
+    <div class="container py-3">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center" data-animate>
+                <p class="section-label">Fellowship</p>
+                <h2 class="section-title">Sister Churches &amp; Related Ministries</h2>
+                <div class="section-divider mx-auto"></div>
+                <p class="text-muted lh-lg">
+                    The Church in Dapitan City is part of the Lord's Recovery — a worldwide movement
+                    of local churches meeting on the ground of the one Body of Christ.
+                    Below are related websites and resources.
+                </p>
+            </div>
+        </div>
+
+        {% if links is empty %}
+            {# Default resource links when DB is empty #}
+            <div class="row g-3 stagger-grid">
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.localchurches.org" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-globe2"></i></div>
+                        <div class="related-link-body">
+                            <h5>localchurches.org</h5>
+                            <p>General information about the local churches worldwide</p>
+                            <span class="related-link-url">www.localchurches.org</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.lsm.org" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-book"></i></div>
+                        <div class="related-link-body">
+                            <h5>Living Stream Ministry</h5>
+                            <p>Christian books, Bibles, and online ministry publications</p>
+                            <span class="related-link-url">www.lsm.org</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.churchinmanila.org" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-building"></i></div>
+                        <div class="related-link-body">
+                            <h5>Church in Manila</h5>
+                            <p>The local church in Manila, Philippines</p>
+                            <span class="related-link-url">www.churchinmanila.org</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.recoveryversion.bible" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-journal-text"></i></div>
+                        <div class="related-link-body">
+                            <h5>Recovery Version Bible</h5>
+                            <p>The Holy Bible — Recovery Version with footnotes</p>
+                            <span class="related-link-url">www.recoveryversion.bible</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.ministrybooks.org" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-journal-bookmark"></i></div>
+                        <div class="related-link-body">
+                            <h5>Ministry Books</h5>
+                            <p>Christian publications and ministry books online</p>
+                            <span class="related-link-url">www.ministrybooks.org</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://www.churchinanaheim.org" target="_blank" rel="noopener" class="related-link-card">
+                        <div class="related-link-icon"><i class="bi bi-building"></i></div>
+                        <div class="related-link-body">
+                            <h5>Church in Anaheim</h5>
+                            <p>The local church in Anaheim, California</p>
+                            <span class="related-link-url">www.churchinanaheim.org</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="row g-3 stagger-grid">
+                {% for link in links %}
+                    {% set safe_url = link.url starts with 'http' ? link.url : 'https://' ~ link.url %}
+                    <div class="col-md-6 col-lg-4">
+                        <a href="{{ safe_url }}" target="_blank" rel="noopener" class="related-link-card">
+                            {% if link.logoUrl %}
+                                <img src="{{ link.logoUrl }}" alt="{{ link.title }}" class="related-link-logo">
+                            {% else %}
+                                <div class="related-link-icon"><i class="bi bi-globe2"></i></div>
+                            {% endif %}
+                            <div class="related-link-body">
+                                <h5>{{ link.title }}</h5>
+                                {% if link.description %}
+                                    <p>{{ link.description }}</p>
+                                {% endif %}
+                                <span class="related-link-url">{{ link.url|replace({'https://': '', 'http://': ''}) }}</span>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

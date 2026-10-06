@@ -1,0 +1,297 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Announcements & Schedule — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .announcement-item { background: #fff; border: 1px solid var(--church-border); border-left: 4px solid var(--church-gold); border-radius: 0 var(--radius) var(--radius) 0; padding: 1.75rem 2rem; margin-bottom: 1.25rem; transition: box-shadow var(--transition), transform var(--transition); }
+    .announcement-item:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+    .announcement-item .ann-date { font-size: 0.75rem; color: var(--church-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.4rem; }
+    .announcement-item h3 { font-size: 1.2rem; color: var(--church-navy); margin: 0 0 0.5rem; }
+    .announcement-item .ann-body { color: var(--church-muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 0.75rem; }
+
+    /* ---- Monthly Calendar ---- */
+    .cal-wrap { border: 1px solid var(--church-border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .cal-header { background: var(--church-navy); color: #fff; padding: 1.1rem 1.5rem; display: flex; align-items: center; justify-content: center; }
+    .cal-header h3 { font-family: var(--font-heading); font-size: 1.3rem; margin: 0; color: #fff; letter-spacing: 0.5px; }
+    .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--church-gold); }
+    .cal-dow span { text-align: center; padding: 0.55rem 0; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--church-dark); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-cell { min-height: 100px; border-right: 1px solid var(--church-border); border-bottom: 1px solid var(--church-border); padding: 0.45rem 0.5rem; background: #fff; }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-grid .cal-cell:nth-last-child(-n+7) { border-bottom: none; }
+    .cal-cell.empty { background: var(--church-section); }
+    .cal-cell.today { background: var(--church-cream); }
+    .cal-day { font-size: 0.82rem; font-weight: 700; color: var(--church-navy); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 0.3rem; }
+    .cal-cell.today .cal-day { background: var(--church-gold); color: var(--church-dark); }
+    .cal-event { display: block; background: var(--church-navy); color: #fff; font-size: 0.62rem; font-weight: 600; padding: 0.13rem 0.38rem; border-radius: 2px; margin-bottom: 0.16rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.6; }
+    .cal-event-time { color: var(--church-gold); font-size: 0.58rem; font-weight: 400; margin-left: 0.25rem; }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1rem; font-size: 0.8rem; color: var(--church-text); }
+    .cal-legend-dot { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .cal-legend-dot span { display: inline-block; width: 10px; height: 10px; background: var(--church-navy); border-radius: 2px; }
+    .cal-legend-dot.today-dot span { background: var(--church-gold); }
+
+    /* ---- Meeting Cards ---- */
+    .meeting-card { background: #fff; border: 1px solid var(--church-border); border-radius: var(--radius); padding: 1.5rem 1.75rem; height: 100%; transition: box-shadow var(--transition), border-color var(--transition); }
+    .meeting-card:hover { box-shadow: var(--shadow-md); border-color: var(--church-gold); }
+    .meeting-card h4 { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--church-navy); margin-bottom: 0.4rem; }
+    .meeting-card .meeting-when { font-size: 0.77rem; font-weight: 600; color: var(--church-gold-dk); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.4rem; }
+    .meeting-card p { font-size: 0.88rem; line-height: 1.8; color: var(--church-text); margin-bottom: 0.55rem; text-align: justify; }
+    .meeting-card p:last-child { margin-bottom: 0; }
+    .meeting-sub { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--church-border); }
+    .meeting-sub-title { font-size: 0.77rem; font-weight: 700; color: var(--church-navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.3rem; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Announcements &amp; Schedule</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Announcements</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+{# ======== MONTHLY CALENDAR ======== #}
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-11 text-center" data-animate>
+                <p class="section-label">This Month</p>
+                <h2 class="section-title">Our Gatherings Calendar</h2>
+                <div class="section-divider mx-auto"></div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+
+                <div class="cal-wrap">
+
+                    {# Month Header #}
+                    <div class="cal-header">
+                        <h3>
+                            <i class="bi bi-calendar3 me-2" style="color:var(--church-gold);"></i>
+                            {{ calendar.month_name }}
+                        </h3>
+                    </div>
+
+                    {# Day-of-week headers #}
+                    <div class="cal-dow">
+                        <span>Sun</span>
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                    </div>
+
+                    {# Calendar grid #}
+                    <div class="cal-grid">
+                        {% for week in calendar.weeks %}
+                            {% for cell in week %}
+                                {% if cell is null %}
+                                    <div class="cal-cell empty"></div>
+                                {% else %}
+                                    <div class="cal-cell {{ cell.isToday ? 'today' : '' }}">
+                                        <div class="cal-day">{{ cell.day }}</div>
+                                        {% for event in cell.events %}
+                                            <span class="cal-event" title="{{ event.name }} · {{ event.time }}">
+                                                {{ event.name }}<span class="cal-event-time">{{ event.time }}</span>
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                {# Legend #}
+                <div class="cal-legend mt-3">
+                    <div class="cal-legend-dot today-dot">
+                        <span></span> Today
+                    </div>
+                    <div class="cal-legend-dot">
+                        <span></span> Lord's Table · Sun 9:30 am
+                    </div>
+                    <div class="cal-legend-dot">
+                        <span></span> Fellowship Mtg · Sun 11:00 am
+                    </div>
+                    <div class="cal-legend-dot">
+                        <span></span> Prayer Meeting · Tue 7:30 pm
+                    </div>
+                    <div class="cal-legend-dot">
+                        <span></span> College Mtg · Wed 6:00 pm
+                    </div>
+                    <div class="cal-legend-dot">
+                        <span></span> Young People's · Sat 6:00 pm
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======== MEETING DETAILS ======== #}
+<section class="py-5 bg-church-cream">
+    <div class="container py-3">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10 text-center" data-animate>
+                <p class="section-label">Our Gatherings</p>
+                <h2 class="section-title">Meeting Details</h2>
+                <div class="section-divider mx-auto"></div>
+            </div>
+        </div>
+        <div class="row g-3 stagger-grid">
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>The Lord's Table Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Lord's Day (Sunday) &nbsp;·&nbsp; 9:30 – 10:30 am</div>
+                    <p>As believers in Christ who love and serve Him, we gather each Sunday to praise Him as we eat the bread and drink the cup (Luke 22:19-20). We also worship the Father for His purpose, His plan, His love, and so many blessings He has given us in His Son (Hebrews 2:12).</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Fellowship Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Lord's Day (Sunday) &nbsp;·&nbsp; 11:00 am – noon</div>
+                    <p>After the worship of the Father, we have an option of two meetings:</p>
+                    <div class="meeting-sub">
+                        <div class="meeting-sub-title">Mutual Fellowship</div>
+                        <p>We share with one another what we have realized and enjoyed in the Scriptures in an open session of mutual teaching and encouragement (1 Corinthians 14:31).</p>
+                    </div>
+                    <div class="meeting-sub">
+                        <div class="meeting-sub-title">Basic Truth Meeting</div>
+                        <p>A meeting for new believers to dive into key truths in the Bible, building on a one-year curriculum to lay a solid foundation for growth in Christ (Ephesians 4:13, 15-16).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Children's Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Lord's Day (Sunday) &nbsp;·&nbsp; 9:30 am – noon</div>
+                    <p>Our toddlers and children are very precious to us. We seek to help the little ones among us develop into young men and women who love Jesus Christ, know the Bible, and seek God's kingdom first (Matthew 19:14).</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Prayer Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Tuesday &nbsp;·&nbsp; 7:30 – 8:30 pm</div>
+                    <p>The prayer meeting is a meeting for the believers in Christ to come together to pray in coordination. "By means of all prayer and petition, praying at every time in spirit and watching unto this in all perseverance and petition concerning all the saints." (Ephesians 6:18)</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>College Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Wednesday &nbsp;·&nbsp; 6:00 – 9:00 pm</div>
+                    <p>Want to be a strong young man or woman and begin a grounded Christian life? College students gather every Wednesday evening to sing, worship, and fellowship with one another.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Young People's Meeting</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Saturday &nbsp;·&nbsp; 6:00 – 8:30 pm</div>
+                    <p>We keep our middle school and high school students' lives meaningful by providing an atmosphere rich with God's Word, healthy companionships, and fellowship opportunities.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Spiritual Companionship</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Daily</div>
+                    <p>Prayerful spiritual relationships of two or three believers fuel our Christian life and enable us to be Christ's witnesses (Matthew 18:20). We value these companionships highly and take every opportunity to encourage, strengthen, and sustain them.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Small-Group Gatherings</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Weeknights</div>
+                    <p>Gather with believers in your neighborhood for dinner, singing, Bible study, prayer, and daily fellowship. Dad, mom, the kids, college students — everybody's involved!</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="meeting-card">
+                    <h4>Special Events &amp; Other Meetings</h4>
+                    <div class="meeting-when"><i class="bi bi-calendar3"></i> Periodic</div>
+                    <p>Whether you're seven or seventy, we hold retreats, conferences, and special trainings designed for your spiritual growth and Christian advance. Additionally, there is a weekly ministry meeting where a ministering brother speaks a word of faith that produces God's building materials.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ======== ANNOUNCEMENTS ======== #}
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <i class="bi bi-megaphone fs-3" style="color:var(--church-gold);"></i>
+                    <div>
+                        <p class="section-label mb-0">Keep Informed</p>
+                        <h2 class="section-title mb-0" style="font-size:1.6rem;">Church Announcements</h2>
+                    </div>
+                </div>
+                <p class="text-muted mb-4">
+                    Stay up to date with the latest news, events, and downloadable resources from
+                    The Church in Dapitan City.
+                </p>
+
+                {% if announcements is empty %}
+                    <div class="empty-state" style="background:#fff;border:1px solid var(--church-border);border-radius:4px;">
+                        <i class="bi bi-megaphone"></i>
+                        <p>No announcements at this time. Please check back soon.</p>
+                    </div>
+                {% else %}
+                    {% for ann in announcements %}
+                        <div class="announcement-item" data-animate>
+                            <div class="ann-date">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ ann.publishedAt ? ann.publishedAt|date('F j, Y') : 'No date' }}
+                            </div>
+                            <h3>{{ ann.title }}</h3>
+                            {% if ann.content %}
+                                <div class="ann-body">
+                                    {{ ann.content|nl2br }}
+                                </div>
+                            {% endif %}
+                            {% if ann.attachmentFilename %}
+                                <div class="mt-2">
+                                    <a href="{{ path('app_announcement_download', {id: ann.id}) }}"
+                                       class="btn-download">
+                                        <i class="bi bi-file-earmark-arrow-down"></i>
+                                        Download: {{ ann.attachmentOriginalName ?? 'Attachment' }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

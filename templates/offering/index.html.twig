@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offerings — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ---- Method Cards (By Check / Electronically) ---- */
+    .offer-method-card {
+        background: #fff;
+        border: 1px solid var(--church-border);
+        border-top: 4px solid var(--church-gold);
+        border-radius: var(--radius);
+        padding: 2.25rem 2rem;
+        height: 100%;
+        text-align: center;
+        transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .offer-method-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .offer-method-icon {
+        width: 64px; height: 64px;
+        background: rgba(201,168,76,0.1);
+        border: 1px solid rgba(201,168,76,0.25);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 1.25rem;
+        font-size: 1.5rem;
+        color: var(--church-gold-dk);
+        transition: all 0.3s;
+    }
+    .offer-method-card:hover .offer-method-icon { background: var(--church-gold); color: #fff; border-color: var(--church-gold); }
+    .offer-method-card h3 { font-family: var(--font-heading); font-size: 1.2rem; color: var(--church-navy); font-weight: 700; margin-bottom: 0.75rem; }
+    .offer-method-card p { font-size: 0.92rem; line-height: 1.8; color: var(--church-text); margin-bottom: 0.6rem; }
+    .offer-method-card p:last-child { margin-bottom: 0; }
+    .offer-detail-box {
+        background: var(--church-section);
+        border: 1px solid var(--church-border);
+        border-radius: var(--radius);
+        padding: 0.9rem 1.25rem;
+        font-size: 0.88rem;
+        line-height: 1.7;
+        color: var(--church-navy);
+        margin: 0.85rem 0 0;
+        display: inline-block;
+        text-align: left;
+    }
+    .offer-detail-box strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--church-muted); margin-bottom: 0.3rem; }
+    .offer-highlight { display: inline-block; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); border-radius: 4px; padding: 0.15rem 0.6rem; font-weight: 700; color: var(--church-navy); font-size: 0.87rem; }
+
+    /* ---- Other Methods (small cards) ---- */
+    .offering-card { background: #fff; border: 1px solid var(--church-border); border-radius: 4px; padding: 2rem 1.75rem; text-align: center; transition: all 0.3s; height: 100%; }
+    .offering-card:hover { border-color: var(--church-gold); box-shadow: 0 8px 25px rgba(201,168,76,0.15); transform: translateY(-3px); }
+    .offering-icon { width: 60px; height: 60px; background: var(--church-section); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; font-size: 1.5rem; color: var(--church-gold-dk); border: 2px solid var(--church-border); transition: all 0.3s; }
+    .offering-card:hover .offering-icon { background: var(--church-gold); color: white; border-color: var(--church-gold); }
+    .offering-card h3 { font-size: 1rem; color: var(--church-navy); margin-bottom: 0.4rem; font-weight: 700; }
+    .offering-card .offering-detail { background: var(--church-section); border-radius: 3px; padding: 0.5rem 0.9rem; font-size: 0.82rem; margin-top: 0.65rem; color: var(--church-navy); }
+    .offering-card .offering-detail strong { display: block; font-size: 0.72rem; color: var(--church-muted); text-transform: uppercase; letter-spacing: 1px; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# ── Hero ── #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Offerings</h1>
+        <div class="page-hero-divider"></div>
+        <p style="color:rgba(255,255,255,0.75);font-size:0.97rem;margin-bottom:1.25rem;line-height:1.7;">
+            If you would like to make an offering to the church,<br>you can do so by check or electronically.
+        </p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Offerings</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+{# ── By Check & Electronically ── #}
+<section class="py-5 bg-church-cream" style="border-top:1px solid var(--church-border);">
+    <div class="container py-3">
+        <p class="section-label text-center">How to Give</p>
+        <h2 class="section-title text-center">Ways to Send Your Offering</h2>
+        <div class="section-divider mx-auto mb-5"></div>
+
+        <div class="row g-4 justify-content-center">
+
+            {# By Check #}
+            <div class="col-lg-5 col-md-6" data-animate="fade-left">
+                <div class="offer-method-card">
+                    <div class="offer-method-icon"><i class="bi bi-envelope-paper"></i></div>
+                    <h3>By Check</h3>
+                    <p>
+                        Make your check payable to
+                        <span class="offer-highlight">THE CHURCH IN DAPITAN CITY</span>.
+                        Checks can be placed in the offering box or mailed to:
+                    </p>
+                    <div class="offer-detail-box">
+                        <strong>Mailing Address</strong>
+                        The Church in Dapitan City<br>
+                        [Street Address]<br>
+                        Dapitan City, Zamboanga del Norte
+                    </div>
+                </div>
+            </div>
+
+            {# Electronically #}
+            <div class="col-lg-5 col-md-6" data-animate="fade-right">
+                <div class="offer-method-card">
+                    <div class="offer-method-icon"><i class="bi bi-phone"></i></div>
+                    <h3>Electronically via ZellePay®</h3>
+                    <p>
+                        You may also send your offering electronically using <strong>ZellePay®</strong>.
+                        Most banks support ZellePay® through their mobile app or online account.
+                        Zelle does not charge a fee for their service.
+                    </p>
+                    <p>
+                        The Church in Dapitan City is registered in Zelle as
+                        <span class="offer-highlight">Christian Fellowship Center Inc.</span>
+                        under the email address
+                        <span class="offer-highlight">offerings.churchinnyc@gmail.com</span>.
+                        Use this email to identify the church as the recipient.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ── Other Methods ── #}
+<section class="py-5 bg-white" style="border-top:1px solid var(--church-border);">
+    <div class="container py-3">
+        <p class="section-label text-center">Other Methods</p>
+        <h2 class="section-title text-center">Additional Ways to Give</h2>
+        <div class="section-divider mx-auto mb-5"></div>
+
+        {% if offerings is empty %}
+            <div class="row g-4 justify-content-center stagger-grid">
+                <div class="col-md-4 col-sm-6">
+                    <div class="offering-card">
+                        <div class="offering-icon"><i class="bi bi-bank"></i></div>
+                        <h3>Bank Transfer</h3>
+                        <p class="text-muted small">Direct bank transfer to the church account. Please contact us for account details.</p>
+                        <div class="offering-detail">
+                            <strong>Bank Name</strong>
+                            Please inquire
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="offering-card">
+                        <div class="offering-icon"><i class="bi bi-phone"></i></div>
+                        <h3>GCash</h3>
+                        <p class="text-muted small">Send via GCash mobile wallet. Please contact us for the account number.</p>
+                        <div class="offering-detail">
+                            <strong>GCash Number</strong>
+                            Please inquire
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="offering-card">
+                        <div class="offering-icon"><i class="bi bi-cash-stack"></i></div>
+                        <h3>Cash Offering</h3>
+                        <p class="text-muted small">Bring your offering directly to any of our church meetings. An offering box is provided.</p>
+                        <div class="offering-detail">
+                            <strong>When</strong>
+                            During any church meeting
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="row g-4 justify-content-center stagger-grid">
+                {% for offering in offerings %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="offering-card">
+                            <div class="offering-icon">
+                                <i class="bi bi-{{ offering.icon ?? 'gift' }}"></i>
+                            </div>
+                            <h3>{{ offering.method }}</h3>
+                            {% if offering.description %}
+                                <p class="text-muted small">{{ offering.description }}</p>
+                            {% endif %}
+                            {% if offering.accountName %}
+                                <div class="offering-detail">
+                                    <strong>Account Name</strong>
+                                    {{ offering.accountName }}
+                                </div>
+                            {% endif %}
+                            {% if offering.accountNumber %}
+                                <div class="offering-detail">
+                                    <strong>Account Number</strong>
+                                    {{ offering.accountNumber }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-5">
+            <p class="text-muted small">
+                For more information about giving, please <a href="{{ path('app_contact') }}">contact us</a>.
+            </p>
+        </div>
+    </div>
+</section>
+
+{# ── Closing Scripture ── #}
+<section class="py-5 text-center" style="background: linear-gradient(135deg, var(--church-navy) 0%, #010330 100%); border-top: 3px solid var(--church-gold);">
+    <div class="container py-2">
+        <p style="color:rgba(255,255,255,0.8);font-style:italic;font-family:var(--font-heading);max-width:600px;margin:0 auto;font-size:1.05rem;line-height:1.85;" data-animate>
+            "Honor Jehovah with your substance / And with the firstfruits of all your produce; / Then your barns will be filled with plenty, / And your vats will burst open with new wine."
+        </p>
+        <p style="color:var(--church-gold);font-weight:700;font-size:0.8rem;letter-spacing:1px;margin-top:0.5rem;">
+            — Proverbs 3:9-10 (Recovery Version)
+        </p>
+    </div>
+</section>
+
+{% endblock %}

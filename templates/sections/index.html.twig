@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sections — The Church in Dapitan City{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Sections</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Sections</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5 bg-church-cream">
+    <div class="container py-3 text-center">
+        <div style="max-width:520px;margin:3rem auto;padding:3rem 2rem;background:#fff;border:1px solid var(--church-border);border-radius:6px;" data-animate>
+            <div style="font-size:3rem;margin-bottom:1.5rem;">🏗️</div>
+            <p class="section-label">Coming Soon</p>
+            <h2 class="section-title">Sections Under Construction</h2>
+            <div class="section-divider mx-auto"></div>
+            <p class="text-muted lh-lg">
+                This area is being prepared. Additional sections and content will be available here soon.
+                Please check back later.
+            </p>
+            <a href="{{ path('app_home') }}" class="btn-church mt-3">Return to Home</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

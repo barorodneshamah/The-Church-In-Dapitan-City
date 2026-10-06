@@ -1,0 +1,478 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ---- Banner ---- */
+    .church-banner-wrap { position: relative; width: 100%; overflow: hidden; background: var(--church-dark); line-height: 0; }
+    .church-banner-slider { width: 100%; height: 90vh; min-height: 520px; position: relative; }
+    .banner-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+    .banner-slide.active { opacity: 1; }
+    .church-banner-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform 8s ease; }
+    .banner-slide.active .church-banner-img { transform: scale(1.04); }
+    .banner-slide:not(.active) .church-banner-img { transform: scale(1); }
+
+    /* Banner gradient overlay */
+    .banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(2,10,116,0.80) 0%, rgba(2,10,116,0.55) 55%, rgba(201,168,76,0.28) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        padding: 2rem 1.5rem;
+    }
+    .banner-overlay::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--church-gold), transparent);
+    }
+
+    /* Banner content */
+    .banner-content { text-align: center; max-width: 720px; }
+    .banner-eyebrow {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3.5px;
+        color: var(--church-gold-lt);
+        opacity: 0.85;
+        margin-bottom: 1rem;
+        animation: heroFadeDown 0.7s ease both;
+    }
+    .banner-title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.4rem, 3.2vw, 2.6rem);
+        color: #fff;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        margin-bottom: 0;
+        text-shadow: 0 2px 30px rgba(0,0,0,0.3);
+        animation: heroFadeDown 0.7s ease 0.1s both;
+    }
+    .banner-divider {
+        width: 0;
+        height: 3px;
+        background: var(--church-gold);
+        margin: 1.25rem auto;
+        border-radius: 2px;
+        animation: heroExpandDivider 0.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.45s both;
+    }
+    .banner-subtitle {
+        font-size: 1rem;
+        color: rgba(255,255,255,0.72);
+        line-height: 1.8;
+        margin-bottom: 2.25rem;
+        font-family: var(--font-body);
+        font-weight: 300;
+        letter-spacing: 0.3px;
+        animation: heroFadeDown 0.7s ease 0.55s both;
+    }
+    .banner-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: heroFadeDown 0.7s ease 0.75s both;
+    }
+
+    /* Dots */
+    .banner-dots { position: absolute; bottom: 1.75rem; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 2; }
+    .banner-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7); background: transparent; cursor: pointer; transition: background 0.25s, border-color 0.25s, transform 0.25s; padding: 0; }
+    .banner-dot.active { background: var(--church-gold); border-color: var(--church-gold); transform: scale(1.3); }
+
+    /* Scroll arrow */
+    .banner-scroll-arrow {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 2;
+        width: 40px; height: 40px;
+        border: 1.5px solid rgba(255,255,255,0.35);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.55);
+        font-size: 0.85rem;
+        animation: bounceDown 1.8s ease infinite 1.5s;
+        cursor: pointer;
+        text-decoration: none;
+        transition: border-color 0.2s, color 0.2s;
+    }
+    .banner-scroll-arrow:hover { border-color: var(--church-gold); color: var(--church-gold); }
+    @keyframes bounceDown {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(6px); }
+    }
+
+    /* ---- Home Sections ---- */
+    .home-section { padding: 5.5rem 0; text-align: center; }
+    .home-section-title { font-family: var(--font-heading); font-size: clamp(1.9rem, 4vw, 2.6rem); color: var(--church-navy); font-weight: 700; margin-bottom: 0.75rem; line-height: 1.2; letter-spacing: -0.02em; }
+    .home-section-title::after { content: ''; display: block; width: 44px; height: 3px; background: var(--church-gold); margin: 0.9rem auto 1.5rem; border-radius: 2px; transition: width 0.4s ease; }
+    .home-body { max-width: 760px; margin: 0 auto; font-size: 1.02rem; line-height: 1.9; color: var(--church-text); }
+    .home-body p { margin-bottom: 1.3rem; }
+    .home-body p:last-child { margin-bottom: 0; }
+    .home-intro-text { max-width: 680px; margin: 0 auto 1.75rem; font-size: 1rem; line-height: 1.8; color: var(--church-text); text-align: center; }
+    .home-beliefs-list { max-width: 700px; margin: 0 auto 2.5rem; text-align: left; font-size: 0.97rem; line-height: 1.85; color: var(--church-text); list-style: none; padding-left: 0; }
+    .home-beliefs-list li { margin-bottom: 0.65rem; padding-left: 1.5rem; position: relative; }
+    .home-beliefs-list li::before { content: ''; position: absolute; left: 0; top: 0.7em; width: 7px; height: 7px; background: var(--church-gold); border-radius: 50%; }
+    .home-view-all { display: inline-block; font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--church-navy); border-bottom: 2px solid var(--church-gold); padding-bottom: 3px; transition: color var(--transition), border-color var(--transition); }
+    .home-view-all:hover { color: var(--church-gold-dk); border-color: var(--church-gold-dk); }
+
+    /* ---- Gatherings ---- */
+    .gathering-card { background: #fff; border: 1px solid var(--church-border); border-radius: var(--radius); padding: 2rem 1.75rem; height: 100%; text-align: left; transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s; position: relative; overflow: hidden; }
+    .gathering-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--church-gold); border-radius: 4px 0 0 4px; transition: width 0.3s; }
+    .gathering-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: rgba(201,168,76,0.35); }
+    .gathering-card:hover::before { width: 5px; }
+    .gathering-icon { width: 46px; height: 46px; background: rgba(201,168,76,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--church-gold-dk); font-size: 1.15rem; margin-bottom: 1rem; border: 1px solid rgba(201,168,76,0.2); }
+    .gathering-card h4 { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--church-navy); margin-bottom: 0.4rem; }
+    .gathering-when { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--church-gold-dk); margin-bottom: 0.75rem; }
+    .gathering-card p { font-size: 0.92rem; line-height: 1.8; color: var(--church-text); margin: 0; }
+
+    /* ---- Announcements ---- */
+    .home-ann-item { max-width: 720px; margin: 0 auto 2rem; text-align: left; padding: 1.5rem 1.75rem; background: #fff; border: 1px solid var(--church-border); border-left: 4px solid var(--church-gold); border-radius: 0 var(--radius) var(--radius) 0; transition: box-shadow 0.25s, transform 0.25s; }
+    .home-ann-item:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+    .home-ann-date { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--church-muted); margin-bottom: 0.35rem; }
+    .home-ann-title { font-family: var(--font-heading); font-size: 1.15rem; color: var(--church-navy); font-weight: 600; margin-bottom: 0.4rem; }
+    .home-ann-body { font-size: 0.9rem; line-height: 1.72; color: var(--church-muted); margin: 0; }
+
+    /* ---- FAQ Preview ---- */
+    .home-faq-list { max-width: 720px; margin: 0 auto 2.5rem; }
+    .home-faq-item { border-bottom: 1px solid var(--church-border); text-align: left; }
+    .home-faq-item:first-child { border-top: 1px solid var(--church-border); }
+    .home-faq-question { width: 100%; background: transparent; border: none; padding: 1.1rem 0.25rem; text-align: left; font-family: var(--font-heading); font-size: 1rem; font-weight: 600; color: var(--church-navy); display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; transition: color var(--transition); line-height: 1.5; }
+    .home-faq-question:not(.collapsed) { color: var(--church-gold-dk); }
+    .home-faq-question:hover { color: var(--church-gold-dk); }
+    .faq-icon { flex-shrink: 0; font-size: 0.85rem; transition: transform 0.25s; color: var(--church-gold); }
+    .home-faq-question:not(.collapsed) .faq-icon { transform: rotate(180deg); }
+    .home-faq-answer { font-size: 0.95rem; line-height: 1.85; color: var(--church-text); padding: 0 0.25rem 1.1rem; }
+
+    /* ---- History stat boxes ---- */
+    .stat-box { background: #fff; border: 1px solid var(--church-border); border-radius: var(--radius); padding: 2rem 1.5rem; text-align: center; }
+    .stat-box-num { font-family: var(--font-heading); font-size: 2.6rem; color: var(--church-gold); font-weight: 700; line-height: 1; }
+    .stat-box-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--church-muted); margin-top: 0.5rem; }
+
+    @media (max-width: 767px) {
+        .church-banner-slider { height: 70vh; min-height: 400px; }
+        .banner-scroll-arrow { display: none; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# ======== BANNER ======== #}
+<section class="church-banner-wrap" id="heroBanner">
+    <div class="church-banner-slider">
+
+        <div class="banner-slide active">
+            <img src="{{ asset('images/Banner2.png') }}"
+                 alt="The Church in Dapitan City"
+                 class="church-banner-img">
+        </div>
+        <div class="banner-slide">
+            <img src="{{ asset('images/Pic1.jpg') }}"
+                 alt="The Church in Dapitan City"
+                 class="church-banner-img">
+        </div>
+
+        {# Gradient + Text Overlay #}
+        <div class="banner-overlay">
+            <div class="banner-content">
+                <div class="banner-eyebrow">Welcome to</div>
+                <h1 class="banner-title">The Church in Dapitan City</h1>
+                <div class="banner-divider"></div>
+                <p class="banner-subtitle">
+                    Gathering as the local expression of the Body of Christ in <span style="white-space:nowrap">Dapitan City,</span><br>
+                    walking in the church life and pursuing God in spirit and in truth.
+                </p>
+                <div class="banner-actions">
+                    <a href="{{ path('app_beliefs') }}" class="btn-church">Our Beliefs</a>
+                    <a href="{{ path('app_contact') }}" class="btn-church-outline">Visit Us</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="banner-dots">
+        <button class="banner-dot active" aria-label="Slide 1"></button>
+        <button class="banner-dot" aria-label="Slide 2"></button>
+    </div>
+
+    <a href="#welcome" class="banner-scroll-arrow" aria-label="Scroll down">
+        <i class="bi bi-chevron-down"></i>
+    </a>
+</section>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+(function() {
+    const slides = document.querySelectorAll('.banner-slide');
+    const dots   = document.querySelectorAll('.banner-dot');
+    let current  = 0, timer;
+    function goTo(n) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+    }
+    function next() { goTo(current + 1); }
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { clearInterval(timer); goTo(i); timer = setInterval(next, 6000); }));
+    timer = setInterval(next, 6000);
+})();
+</script>
+{% endblock %}
+
+{# ======== WELCOME ======== #}
+<section class="home-section bg-white" id="welcome">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title">Welcome</h2>
+            <div class="home-body">
+                <p>
+                    The Church in Dapitan City warmly welcomes you. We are believers in the Lord Jesus Christ
+                    who have personally received Him as our Savior. He is the most excellent and enjoyable Person.
+                    We love Him and endeavor to give Him the first place in all things.
+                </p>
+                <p>
+                    We highly treasure the Holy Bible as God's complete divine revelation. We hold the genuine
+                    Christian faith, which is revealed in the Bible and is common to all believers in Christ
+                    (Titus 1:4; Jude 3).
+                </p>
+                <p>
+                    Together with all believers in Christ, we are members of His one Body, the church
+                    (Ephesians 5:30; 1:22–23). In order to practice the oneness of the Body with all the
+                    Christians in Dapitan City and on the whole earth, we meet as the Church in Dapitan City
+                    and are in fellowship with thousands of local churches worldwide.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======== OUR BELIEFS ======== #}
+<section class="home-section bg-church-cream" style="border-top:1px solid var(--church-border);">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title">Our Beliefs</h2>
+            <p class="home-intro-text">
+                We hold the faith which is common to all the believers (Titus 1:4, Jude 3):
+            </p>
+            <ul class="home-beliefs-list">
+                <li>The Bible is the complete divine revelation inspired word by word by God through the Holy Spirit (2 Peter 1:21; 2 Timothy 3:16).</li>
+                <li>God is uniquely one, yet triune — the Father, the Son, and the Spirit (1 Timothy 2:5a, Matthew 28:19).</li>
+                <li>The Son of God, even God Himself, was incarnated to be a man by the name of Jesus Christ (John 1:1, John 1:14).</li>
+                <li>Christ died on the cross for our sins, shedding His blood for our redemption (1 Peter 2:24, Ephesians 1:7a).</li>
+                <li>Christ resurrected from among the dead on the third day (1 Corinthians 15:4).</li>
+                <li>Christ ascended to the right hand of God to be Lord of all (Acts 1:9, Acts 2:33, Acts 2:36).</li>
+                <li>Whenever any person repents to God and believes in the Lord Jesus Christ, he is regenerated (born again) and becomes a living member of the one Body of Christ (Acts 20:21, John 3:3).</li>
+                <li>Christ is coming again to receive His believers to Himself (1 Thessalonians 2:19).</li>
+            </ul>
+            <a href="{{ path('app_beliefs') }}" class="home-view-all">View All Beliefs</a>
+        </div>
+    </div>
+</section>
+
+{# ======== OUR GATHERINGS ======== #}
+<section class="home-section bg-white" style="border-top:1px solid var(--church-border);">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title">Our Gatherings</h2>
+        </div>
+        <div class="row g-3 mt-3 stagger-grid">
+            <div class="col-md-4">
+                <div class="gathering-card">
+                    <div class="gathering-icon"><i class="bi bi-cup"></i></div>
+                    <h4>Lord's Table Meeting</h4>
+                    <div class="gathering-when"><i class="bi bi-clock me-1"></i>Sunday · 9:30 AM</div>
+                    <p>We gather each Sunday to remember the Lord by breaking bread and worshipping the Father in the fellowship of the Body of Christ (Luke 22:19-20).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="gathering-card">
+                    <div class="gathering-icon"><i class="bi bi-heart"></i></div>
+                    <h4>Prayer Meeting</h4>
+                    <div class="gathering-when"><i class="bi bi-clock me-1"></i>Tuesday · 7:30 PM</div>
+                    <p>The brothers and sisters come together to pray in one accord, calling on the Lord and interceding for the church life (Ephesians 6:18).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="gathering-card">
+                    <div class="gathering-icon"><i class="bi bi-mortarboard"></i></div>
+                    <h4>College Meeting</h4>
+                    <div class="gathering-when"><i class="bi bi-clock me-1"></i>Wednesday · 6:00 PM</div>
+                    <p>We reach out to college students, bringing the gospel to the campuses and nurturing young believers in the church life.</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5" data-animate>
+            <a href="{{ path('app_announcements') }}" class="home-view-all">View Full Schedule</a>
+        </div>
+    </div>
+</section>
+
+{# ======== HISTORY ======== #}
+<section class="home-section bg-church-cream" style="border-top: 3px solid var(--church-gold);">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5" data-animate="fade-left">
+                <p class="section-label">Our Story</p>
+                <h2 class="home-section-title" style="font-size:1.9rem;text-align:left;">A Brief History of<br>the Church in Dapitan City</h2>
+                <div class="section-divider"></div>
+                <div class="home-body" style="text-align:left;">
+                    <p>
+                        [Placeholder — Share when the church was first established in Dapitan City,
+                        who brought the gospel here, and how the church life began in this locality.]
+                    </p>
+                    <p>
+                        [Placeholder — Describe key milestones: early gatherings, growth of the saints,
+                        significant meetings or conferences, and how the church has developed over the years.]
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-7" data-animate="fade-right">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-box-num">19XX</div>
+                            <div class="stat-box-label">Year Established</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-box-num">XX+</div>
+                            <div class="stat-box-label">Years of Church Life</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="verse-block">
+                            <p>"For where there are two or three gathered into My name, there am I in their midst."</p>
+                            <cite>— Matthew 18:20 (Recovery Version)</cite>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======== LATEST ANNOUNCEMENTS ======== #}
+<section class="home-section bg-white" style="border-top:1px solid var(--church-border);">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title">Latest Announcements</h2>
+        </div>
+
+        {% if latest_announcements is empty %}
+            <p class="home-body" style="color:var(--church-muted);">No announcements yet. Check back soon.</p>
+        {% else %}
+            <div class="mt-4">
+                {% for ann in latest_announcements %}
+                    <div class="home-ann-item" data-animate>
+                        <div class="home-ann-date">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            {{ ann.publishedAt ? ann.publishedAt|date('F j, Y') : '' }}
+                        </div>
+                        <div class="home-ann-title">{{ ann.title }}</div>
+                        {% if ann.content %}
+                            <p class="home-ann-body">{{ ann.content|striptags|slice(0, 200) }}{% if ann.content|length > 200 %}…{% endif %}</p>
+                        {% endif %}
+                        {% if ann.attachmentFilename %}
+                            <a href="{{ path('app_announcement_download', {id: ann.id}) }}" class="btn-download mt-2">
+                                <i class="bi bi-download"></i> Download Attachment
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="mt-3" data-animate>
+                <a href="{{ path('app_announcements') }}" class="home-view-all">View All Announcements</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ======== RECENT PHOTOS ======== #}
+{% if recent_photos is not empty %}
+<section class="home-section bg-church-cream" style="padding-bottom:4rem; border-top:1px solid var(--church-border);">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title">Recent Photos</h2>
+        </div>
+        <div class="gallery-grid mt-4" data-animate>
+            {% for item in recent_photos %}
+                <div class="gallery-thumb">
+                    {% if item.imageFilename %}
+                        <img src="{{ asset('uploads/gallery/' ~ item.imageFilename) }}"
+                             alt="{{ item.title }}" loading="lazy">
+                        <div class="gallery-thumb-overlay">
+                            <h5>{{ item.title }}</h5>
+                        </div>
+                    {% else %}
+                        <div class="gallery-thumb-placeholder">
+                            <i class="bi bi-image"></i>
+                            <span>{{ item.title }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="mt-5" data-animate>
+            <a href="{{ path('app_gallery') }}" class="home-view-all">View Gallery</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ======== FREQUENTLY ASKED QUESTIONS ======== #}
+<section class="home-section" style="background: linear-gradient(135deg, var(--church-navy) 0%, #010330 100%); border-top: 3px solid var(--church-gold);">
+    <div class="container">
+        <div data-animate>
+            <h2 class="home-section-title" style="color:#fff;">Frequently Asked Questions</h2>
+            <p class="home-intro-text" style="color:rgba(255,255,255,0.65);">
+                Common questions about who we are and how we meet.
+            </p>
+        </div>
+
+        {% if featured_faqs is empty %}
+            <p style="color:rgba(255,255,255,0.5);margin-bottom:2rem;">No questions added yet. Check back soon.</p>
+        {% else %}
+            <div class="home-faq-list" style="--church-border: rgba(255,255,255,0.1);" data-animate>
+                {% for faq in featured_faqs %}
+                    <div class="home-faq-item" style="border-color:rgba(255,255,255,0.1);">
+                        <button class="home-faq-question collapsed" style="color:rgba(255,255,255,0.85);"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#homeFaq{{ faq.id }}"
+                                aria-expanded="false"
+                                aria-controls="homeFaq{{ faq.id }}">
+                            {{ faq.question }}
+                            <span class="faq-icon"><i class="bi bi-chevron-down"></i></span>
+                        </button>
+                        <div id="homeFaq{{ faq.id }}" class="collapse">
+                            <div class="home-faq-answer" style="color:rgba(255,255,255,0.65);">
+                                {{ faq.answer|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div data-animate>
+            <a href="{{ path('app_faq') }}" class="home-view-all" style="color:var(--church-gold-lt);border-color:var(--church-gold);">View All FAQs</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Us — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .contact-info-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
+    .contact-info-icon { width: 44px; height: 44px; background: var(--church-section); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--church-gold-dk); font-size: 1.1rem; flex-shrink: 0; border: 1px solid var(--church-border); }
+    .contact-info-item h6 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--church-muted); margin-bottom: 0.2rem; }
+    .contact-info-item p, .contact-info-item a { font-size: 0.93rem; color: var(--church-text); margin: 0; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Contact Us</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Contact Us</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5 bg-church-cream">
+    <div class="container py-3">
+        <div class="row g-5">
+
+            {# Contact Form #}
+            <div class="col-lg-7" data-animate="fade-left">
+                <p class="section-label">Get in Touch</p>
+                <h2 class="section-title">Send Us a Message</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted mb-4 lh-lg">
+                    Whether you have questions, would like to visit, or want to know more about the church life,
+                    we'd love to hear from you. Fill in the form below and we'll respond as soon as we can.
+                </p>
+
+                {{ form_start(form, {attr: {novalidate: 'novalidate', class: 'bg-white p-4 rounded-2 border'}}) }}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(form.phone) }}
+                            {{ form_widget(form.phone) }}
+                            {{ form_errors(form.phone) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(form.subject) }}
+                            {{ form_widget(form.subject) }}
+                            {{ form_errors(form.subject) }}
+                        </div>
+                        <div class="col-12">
+                            {{ form_label(form.message) }}
+                            {{ form_widget(form.message) }}
+                            {{ form_errors(form.message) }}
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn-church">
+                                <i class="bi bi-send me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+
+            {# Contact Info #}
+            <div class="col-lg-5" data-animate="fade-right">
+                <p class="section-label">Visit Us</p>
+                <h2 class="section-title">Church Information</h2>
+                <div class="section-divider"></div>
+
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div>
+                        <h6>Address</h6>
+                        <p>Dapitan City, Zamboanga Del Norte<br>Philippines</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <h6>Email</h6>
+                        <a href="mailto:tnews2090@gmail.com" class="text-dark">
+                            tnews2090@gmail.com
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                    <div>
+                        <h6>Meeting Schedule</h6>
+                        <p>
+                            <strong>Wednesday</strong> — 7:00 PM Campus Work<br>
+                            <strong>Sunday</strong> — 9:00 AM Lord's Day Meeting<br>
+                            <strong>Sunday</strong> — 10:00 PM Children's Meeting<br>
+                            <strong>Sunday</strong> — 3:00 PM Prayer Meeting<br>
+                            <strong>Friday</strong> — 7:00 PM Ministry Meeting
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">
+                        <i class="bi bi-facebook"></i>
+                    </div>
+                    <div>
+                        <h6>Social Media</h6>
+                        <a href="https://www.facebook.com/tnews2090/" class="text-dark">Find us on Facebook</a>
+                        <a href="https://www.youtube.com/channel/UCcOsyOFkXE1pPgTS_LcGWMg" class="text-dark">Follow us on YouTube</a>
+                    </div>
+                </div>
+
+                {# Verse #}
+                <div class="verse-block mt-4">
+                    <p>"For where there are two or three gathered into My name, there am I in their midst."</p>
+                    <cite>— Matthew 18:20 (Recovery Version)</cite>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gallery — The Church in Dapitan City{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .category-tabs { border-bottom: 2px solid var(--church-border); margin-bottom: 2rem; gap: 0.25rem; }
+    .category-tabs .tab-btn { background: none; border: none; border-bottom: 3px solid transparent; color: var(--church-muted); font-family: var(--font-body); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.6px; padding: 0.6rem 1.25rem; margin-bottom: -2px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .category-tabs .tab-btn:hover, .category-tabs .tab-btn.active { color: var(--church-navy); border-bottom-color: var(--church-gold); }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# Page Hero #}
+<div class="page-hero">
+    <div class="container">
+        <div class="hero-eyebrow">The Church in Dapitan City</div>
+        <h1>Gallery &amp; Testimonies</h1>
+        <div class="page-hero-divider"></div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Gallery &amp; Testimonies</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+{# Category Navigation #}
+<div class="bg-white border-bottom py-2">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-1 category-tabs">
+            <a href="{{ path('app_gallery') }}"
+               class="tab-btn {{ current_category is null ? 'active' }}">
+                <i class="bi bi-images me-1"></i>All Photos
+            </a>
+            {% for slug, label in categories %}
+                <a href="{{ path('app_gallery_category', {category: slug}) }}"
+                   class="tab-btn">
+                    {{ label }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<section class="py-5 bg-white">
+    <div class="container py-3" data-animate>
+        {% if items is empty %}
+            <div class="empty-state">
+                <i class="bi bi-images"></i>
+                <p>No photos have been added yet. Please check back soon.</p>
+            </div>
+        {% else %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="text-muted mb-0">Showing {{ items|length }} photo{{ items|length != 1 ? 's' }}</p>
+            </div>
+            <div class="gallery-grid">
+                {% for item in items %}
+                    <div class="gallery-thumb">
+                        {% if item.imageFilename %}
+                            <img src="{{ asset('uploads/gallery/' ~ item.imageFilename) }}"
+                                 alt="{{ item.title }}" loading="lazy">
+                            <div class="gallery-thumb-overlay">
+                                <div>
+                                    <h5>{{ item.title }}</h5>
+                                    <small style="color:rgba(255,255,255,0.6);font-size:0.75rem;">{{ item.categoryLabel }}</small>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="gallery-thumb-placeholder">
+                                <i class="bi bi-image"></i>
+                                <span>{{ item.title }}</span>
+                                <small>{{ item.categoryLabel }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
